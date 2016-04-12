@@ -16,26 +16,26 @@ class tree;
 
 struct trnode
 {
-   std::string f;
-   std::vector< tree > subtrees;
+  std::string f;
+  std::vector< tree > subtrees;
 
-   size_t refcnt;
-      // The reference counter: Counts how often this trnode is referred to.
+  size_t refcnt;
+    // The reference counter: Counts how often this trnode is referred to.
+  trnode( const std::string& f, const std::vector< tree > & subtrees,
+         size_t refcnt )
+    : f{f},
+      subtrees{ subtrees },
+      refcnt{ refcnt }
+  { }
 
-   trnode( const std::string& f, const std::vector< tree > & subtrees,
-           size_t refcnt )
-      : f{f},
-        subtrees{ subtrees },
-        refcnt{ refcnt }
-   { }
+  trnode( const std::string& f, std::vector<tree> &&subtrees,
+         size_t refcnt )
+    : f{f},
+      subtrees{ std::move( subtrees )},
+      refcnt{ refcnt }
+  { }
 
-   trnode( const std::string& f, std::vector<tree> &&subtrees,
-           size_t refcnt )
-      : f{f},
-        subtrees{ std::move( subtrees )},
-        refcnt{ refcnt }
-   { }
-
+  ~trnode() = default;
 };
 
 
@@ -65,24 +65,34 @@ public:
    void operator = ( const tree& t );
 
    const std::string& functor( ) const;
-   std::string& functor( );
+   // std::string& functor( );
 
    const tree& operator [ ] ( size_t i ) const;
-   tree& operator [ ] ( size_t i );
+   // tree& operator [ ] ( size_t i );
    size_t nrsubtrees( ) const;
 
    ~tree( );
 
+   void replacesubtree(size_t i, const tree& t);
+   void replacefunctor(const std::string& f);
+
+  //  friend std::ostream& operator<< (std::ostream& s, const tree& t);
+   size_t getaddress() const {
+     return reinterpret_cast<size_t>(pntr);
+   }
 private:
 public:
    // Delete public, when the thing is tested:
 
    void ensure_not_shared( );
+   void ensure_not_shared(size_t i);
 
 };
 
 std::ostream& operator << ( std::ostream& stream, const tree& t );
    // Doesn't need to be friend, because it uses only functor( ),
    // nrsubtrees( ) and [ ].
+
+tree subst(const tree& t, const std::string& var, const tree& val);
 
 #endif
