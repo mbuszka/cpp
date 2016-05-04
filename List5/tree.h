@@ -48,6 +48,7 @@ public:
       : pntr( new trnode( f, { }, 1 ))
    { }
 
+
    tree( const std::string& f, const std::vector< tree > & subtrees )
       : pntr( new trnode( f, subtrees, 1 ))
    { }
@@ -75,20 +76,15 @@ public:
 
    void replacesubtree(size_t i, const tree& t);
    void replacefunctor(const std::string& f);
-
-  //  friend std::ostream& operator<< (std::ostream& s, const tree& t);
    size_t getaddress() const {
      return reinterpret_cast<size_t>(pntr);
    }
 private:
-public:
-   // Delete public, when the thing is tested:
-
    void ensure_not_shared( );
-   void ensure_not_shared(size_t i);
-
 };
 
+bool operator == (tree t1, tree t2);
+bool operator != (tree t1, tree t2);
 std::ostream& operator << ( std::ostream& stream, const tree& t );
    // Doesn't need to be friend, because it uses only functor( ),
    // nrsubtrees( ) and [ ].

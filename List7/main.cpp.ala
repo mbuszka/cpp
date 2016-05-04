@@ -1,0 +1,27 @@
+#include "matching.h"
+
+int main() {
+	tree t1(std::string("_a"));
+   	tree t2(std::string("_b"));
+   	tree t3 = tree(std::string("f"), {t1, t2});
+
+	std::vector <tree> arguments = {t1, t2, t3};
+	tree t4("F", std::move(arguments));
+
+	tree t5 = subst(t4, "_a", tree("_x"));
+	tree t6 = subst(t4, "_b", tree("g", {tree("c")}));
+
+	if(!(t5 == t6)) std::cout<<"t5 != t6\n\n";
+
+	std::list< matching > list = match(t5, t6);
+	std::cout << "t5 = " << t5 << "\nt6 = " << t6 << "\n\n";
+	if(!list.empty()) std::cout << "t5 and t6 can be unified, " << list.front();
+	tree unified = list.front()(t5);
+	std::cout << "the result is:\n\t" << unified << "\n\n";
+
+	tree t7 = subst(t6, "_a", tree("g"));
+	list = match(t7, t6);
+	std::cout << "t7 = " << t7 << "\n\n";
+	if(list.empty()) std::cout << "t7 and t6 cannot be unified\n\n";
+	return 0;
+}

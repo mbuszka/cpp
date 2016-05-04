@@ -9,16 +9,6 @@ int main( int argc, char* argv [ ] )
   tree t2( std::string( "c" ));
   tree td("d", {t1, t2});
   tree t3 = tree( std::string( "f" ), {t0, td} );
-  /*
-  std::vector< tree > arguments = { t1, t2, t3 };
-  std::cout << tree( "F", std::move( arguments )) << "\n";
-
-  tree t4 = t3;
-  t4.functor() = "changed";
-
-  std::cout << t4 << "\n";
-  std::cout << t3 << "\n";
-  */
   tree t4("h");
   std::cout << "moving:\n\t" << t4 << "\n\t";
   t4 = t3;
@@ -31,8 +21,9 @@ int main( int argc, char* argv [ ] )
   std::cout << td << "\n";
   tree t6 = subst(t4, "b", tree("alpha", {tree("beta"), tree("gamma")}));
   std::cout << "subst:\n\t" << t4 << " >> " << t6 << '\n';
-  std::cout << "addreses:\n\t"
-            << t4.getaddress() << " >> " << t6.getaddress() << "\n\t"
+  std::cout << "addreses:\nnode changes:\n\t"
+            << t4.getaddress() << " >> " << t6.getaddress()
+            << "\nnode doesn't change:\n\t"
             << t4[0].getaddress() << " >> " << t6[0].getaddress() << '\n';
   return 0;
 }
